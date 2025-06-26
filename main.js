@@ -9,58 +9,53 @@ function getUserChoice() {
 }
 
 function playRound() {
-  const userChoice = getUserChoice().trim().toLowerCase();
+  const userChoice = getUserChoice();
+  const userChoiceClean = userChoice.trim().toLowerCase();
   const computerChoice = getComputerChoice();
 
-  if (userChoice === computerChoice) {
-    return "tie";
-  } else if (userChoice === "rock") {
-    if (computerChoice === "paper") {
-      return "lose";
-    }
-    return "win";
-  } else if (userChoice === "paper") {
-    if (computerChoice === "scissors") {
-      return "lose";
-    }
-    return "win";
-  } else if (userChoice === "scissors") {
-    if (computerChoice === "rock") {
-      return "lose";
-    }
-    return "win";
+  const winCon = {
+    rock: "scissors",
+    paper: "rock",
+    scissors: "paper",
+  };
+
+  if (userChoiceClean === computerChoice) {
+    // tie
+    return `Tie! Both chose ${userChoiceClean}.`;
+  } else if (winCon[userChoiceClean] === computerChoice) {
+    // user wins
+    return `You win, ${userChoiceClean} beats ${computerChoice}!`;
+  } else if (winCon[computerChoice] === userChoiceClean) {
+    // computer wins
+    return `You lose, ${computerChoice} beats ${userChoiceClean}!`;
   } else {
-    return "invalid";
+    // invalid input (e.g. user typed "roc")
+    return `Invalid input "${userChoice}", try again.`;
   }
 }
 
 function playGame() {
   let userScore = 0;
   let computerScore = 0;
-  let i = 0;
+  let roundsPlayed = 0;
 
-  while (i < 5) {
-    let response = playRound();
-    if (response === "tie") {
-      console.log("Tie!");
-      i++;
-    } else if (response === "win") {
-      console.log("You win this round!");
-      i++;
+  while (roundsPlayed < 5) {
+    const response = playRound();
+    console.log(response);
+
+    if (response.startsWith("Tie")) {
+      roundsPlayed++;
+    } else if (response.startsWith("You win")) {
+      roundsPlayed++;
       userScore++;
-    } else if (response === "lose") {
-      console.log("You lose this round!");
-      i++;
+    } else if (response.startsWith("You lose")) {
+      roundsPlayed++;
       computerScore++;
-    } else if (response === "invalid") {
-      console.log("Invalid input, try again");
     }
-    // console.log(userScore);
-    // console.log(computerScore);
   }
 
   console.log(
-    `The final score is you: ${userScore} vs computer: ${computerScore}`,
+    `The final score is You: ${userScore} vs Computer: ${computerScore}`,
   );
 }
 
