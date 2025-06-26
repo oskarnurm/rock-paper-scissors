@@ -57,6 +57,7 @@ function playGame() {
   console.log(
     `The final score is You: ${userScore} vs Computer: ${computerScore}`,
   );
+  alert(`The final score is You: ${userScore} vs Computer: ${computerScore}`);
 }
 
 playGame();
