@@ -4,13 +4,8 @@ function getComputerChoice() {
   return options[choice];
 }
 
-function getUserChoice() {
-  return prompt("Enter 'rock', 'paper' or 'scissors'");
-}
-
-function playRound() {
-  const userChoice = getUserChoice();
-  const userChoiceClean = userChoice.trim().toLowerCase();
+function playRound(userInput) {
+  const userChoice = userInput.trim().toLowerCase();
   const computerChoice = getComputerChoice();
 
   const winCon = {
@@ -19,18 +14,13 @@ function playRound() {
     scissors: "paper",
   };
 
-  if (userChoiceClean === computerChoice) {
-    // tie
-    return `Tie! Both chose ${userChoiceClean}.`;
-  } else if (winCon[userChoiceClean] === computerChoice) {
-    // user wins
-    return `You win, ${userChoiceClean} beats ${computerChoice}!`;
-  } else if (winCon[computerChoice] === userChoiceClean) {
-    // computer wins
-    return `You lose, ${computerChoice} beats ${userChoiceClean}!`;
-  } else {
-    // invalid input (e.g. user typed "roc")
-    return `Invalid input "${userChoice}", try again.`;
+  // checks if the given choice matches the respective win condition and returns
+  if (userChoice === computerChoice) {
+    return `Tie! Both chose ${userChoice}.`;
+  } else if (winCon[userChoice] === computerChoice) {
+    return `You win, ${userChoice} beats ${computerChoice}!`;
+  } else if (winCon[computerChoice] === userChoice) {
+    return `You lose, ${computerChoice} beats ${userChoice}!`;
   }
 }
 
@@ -39,25 +29,34 @@ function playGame() {
   let computerScore = 0;
   let roundsPlayed = 0;
 
-  while (roundsPlayed < 5) {
-    const response = playRound();
-    console.log(response);
+  const scoreContainer = document.querySelector(".score");
+  const buttons = document.querySelectorAll("button");
+  const scoreText = document.createElement("div");
+  const scoreBoard = document.createElement("div");
+  scoreContainer.append(scoreText, scoreBoard);
 
-    if (response.startsWith("Tie")) {
-      roundsPlayed++;
-    } else if (response.startsWith("You win")) {
-      roundsPlayed++;
-      userScore++;
-    } else if (response.startsWith("You lose")) {
-      roundsPlayed++;
-      computerScore++;
-    }
-  }
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const response = playRound(button.textContent);
+      scoreText.textContent = response;
+      console.log(response);
 
-  console.log(
-    `The final score is You: ${userScore} vs Computer: ${computerScore}`,
-  );
-  alert(`The final score is You: ${userScore} vs Computer: ${computerScore}`);
+      if (response.startsWith("Tie")) {
+        roundsPlayed++;
+      } else if (response.startsWith("You win")) {
+        roundsPlayed++;
+        userScore++;
+      } else if (response.startsWith("You lose")) {
+        roundsPlayed++;
+        computerScore++;
+      }
+
+      if (roundsPlayed === 5) {
+        scoreBoard.textContent = `Game over! The final score is You: ${userScore} vs Computer: ${computerScore}`;
+        buttons.forEach((button) => (button.disabled = true));
+      }
+    });
+  });
 }
 
 playGame();
